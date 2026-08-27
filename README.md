@@ -52,12 +52,50 @@ page](https://cloud.lambda.ai/api-keys).
 | `LAMBDA_MCP_ALLOW_WRITE` | unset | Set to `1` to register the 15 mutating tools. Unset, they do not exist. |
 | `LAMBDA_API_BASE` | `https://cloud.lambda.ai` | Point at a different host. |
 
-Add it to your MCP client:
+Only `PATH` is inherited by an MCP server process. Setting `LAMBDA_API_KEY` in
+your shell is not enough, so it has to go in the client's `env` block below.
+
+### GitHub Copilot CLI
+
+One command, no hand-editing:
+
+```bash
+copilot mcp add lambda-cloud --env LAMBDA_API_KEY=your-key-here -- lambda-mcp
+```
+
+Use the full path to `lambda-mcp` if it is not on your `PATH`. Add
+`--env LAMBDA_MCP_ALLOW_WRITE=1` to enable the mutating tools.
+
+That writes to `~/.copilot/mcp-config.json`. The equivalent by hand:
 
 ```json
 {
   "mcpServers": {
     "lambda-cloud": {
+      "type": "local",
+      "command": "lambda-mcp",
+      "args": [],
+      "tools": ["*"],
+      "env": {
+        "LAMBDA_API_KEY": "your-key-here"
+      }
+    }
+  }
+}
+```
+
+Edit it later with `/mcp edit lambda-cloud`, or check it with `/mcp show`.
+
+### VS Code
+
+VS Code reads `.vscode/mcp.json` and uses `servers` rather than `mcpServers`.
+Copilot CLI ignores that file, so the two do not share config.
+
+```json
+{
+  "servers": {
+    "lambda-cloud": {
+      "type": "stdio",
       "command": "lambda-mcp",
       "env": {
         "LAMBDA_API_KEY": "your-key-here"
@@ -67,22 +105,22 @@ Add it to your MCP client:
 }
 ```
 
-To allow writes, add `"LAMBDA_MCP_ALLOW_WRITE": "1"` next to the key.
+### Without installing
 
-You can also run it with `python -m lambda_mcp`.
-
-To skip installing entirely, let uv fetch and run it from git each time:
+Let uv fetch and run it from git each time:
 
 ```json
 {
   "mcpServers": {
     "lambda-cloud": {
+      "type": "local",
       "command": "uvx",
       "args": [
         "--from",
         "git+https://github.com/Leotus-Richard/Lambda-ai-library.git",
         "lambda-mcp"
       ],
+      "tools": ["*"],
       "env": {
         "LAMBDA_API_KEY": "your-key-here"
       }
@@ -90,6 +128,9 @@ To skip installing entirely, let uv fetch and run it from git each time:
   }
 }
 ```
+
+You can also run the server directly with `python -m lambda_mcp`, which is
+useful for checking that it starts.
 
 ## The write gate
 
