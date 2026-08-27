@@ -14,11 +14,26 @@ opt in.
 
 ## Install
 
+From GitHub:
+
+```bash
+pip install git+https://github.com/Leotus-Richard/Lambda-ai-library.git
+```
+
+Append `@ref` to pin a branch, tag or commit:
+
+```bash
+pip install "git+https://github.com/Leotus-Richard/Lambda-ai-library.git@c95bf56"
+```
+
+Or from a clone:
+
 ```bash
 pip install .
 ```
 
-Python 3.10 or newer. The only runtime dependency is the official `mcp` SDK.
+You need Python 3.10 or newer, plus git on PATH for the first two. `mcp` is the
+only direct dependency, though it brings about 30 packages with it.
 
 ## Configure
 
@@ -49,6 +64,26 @@ Add it to your MCP client:
 To allow writes, add `"LAMBDA_MCP_ALLOW_WRITE": "1"` next to the key.
 
 You can also run it with `python -m lambda_mcp`.
+
+To skip installing entirely, let uv fetch and run it from git each time:
+
+```json
+{
+  "mcpServers": {
+    "lambda-cloud": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/Leotus-Richard/Lambda-ai-library.git",
+        "lambda-mcp"
+      ],
+      "env": {
+        "LAMBDA_API_KEY": "your-key-here"
+      }
+    }
+  }
+}
+```
 
 ## The write gate
 
