@@ -32,8 +32,14 @@ Or from a clone:
 pip install .
 ```
 
-You need Python 3.10 or newer, plus git on PATH for the first two. `mcp` is the
-only direct dependency, though it brings about 30 packages with it.
+You need Python 3.10 or newer, plus git on PATH for the first two. If the repo
+is private, authenticate first with `gh auth setup-git` or use a personal access
+token in the URL. `mcp` is the only direct dependency, though it brings about 30
+packages with it.
+
+This package is not on PyPI and is not meant to go there. `pip install
+lambda-mcp` will not get you this code. The `Private :: Do Not Upload`
+classifier in `pyproject.toml` makes PyPI reject it outright.
 
 ## Configure
 
